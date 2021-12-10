@@ -10,6 +10,20 @@ Please refer to the following link for the tutorial of Autoware.Auto.
 - [Introduction to Autoware.Auto for AI Challenge competitors (pdf)](doc/Introduction_to_Autoware_for_AI_Challenge_Competitors.pdf)
 - [Introduction to Autoware.Auto for AI Challenge competitors (youtube)](https://www.youtube.com/watch?v=p8ay7KTOANM)
 
+## Schedule after the competition(Added on Dec. 10)
+Thank you for participating in the 3rd Japan Automotive AI Challenge.
+Please check the official competition website for coming schedules.
+https://www.jsae.or.jp/jaaic/en/result.html
+
+The competition will end at 17:00 December 17. (Simulations uploaded by 16:59:59 Dec. 17 are valid)
+The provisional ranking will be released on January 17, 2022, and will be finalized at 17:00 on January 21st.
+Any doubts about the competition results will be accepted only the above period.
+The final ranking will be released on January 28th.
+
+As a follow-up tutorial, we will offer a part of the autonomous driving engineering course provided by our special sponsor from December 20th to January 17th, 2022. (lectures in Japanese)
+Participation is limited to the team and registered team members.
+We will inform you details in due course.
+
 ## System Requirements
 ### Running both LGSVL simulator & Autoware in one computer
 - OS: Ubuntu 20.04

@@ -9,6 +9,23 @@
 - [Introduction to Autoware.Auto for AI Challenge competitors (pdf)](doc/Introduction_to_Autoware_for_AI_Challenge_Competitors.pdf)
 - [Introduction to Autoware.Auto for AI Challenge competitors (youtube)](https://www.youtube.com/watch?v=p8ay7KTOANM)
 
+## 競技終了後のスケジュール(12/10追記)
+この度は第3回自動運転AIチャレンジへのご参加をいただきありがとうございました。
+今後のスケジュールについて競技オフィシャルサイトに掲載致しましたのでご確認下さい。
+https://www.jsae.or.jp/jaaic/result.html
+
+競技は12月17日、17時をもって終了となります。（17日16時59分59秒以前にアップロードされたシミュレーションは有効です）
+暫定ランキングは2022年1月17日に公開、1月21日17時をもって確定致します。
+競技結果に対する疑義は上記公開より確定までの間のみ受け付け致します。
+最終ランキングは1月28日に公開となります。
+
+フォローアップチュートリアルとして、12月20日より2022年1月17日まで特別協賛のzero to one社提供の自動運転構築エンジニアリングコースの一部をご提供いたします。
+参加はエントリーをいただいたチーム、チームメンバのみとなります。
+参加方法等別メールにてご案内致します。
+
+尚、表彰式は2022年2月下旬～3月上旬、メタバースにおける表彰式を予定しています。
+表彰式詳細は改めてご連絡致します。
+
 ## 動作環境
 本大会で使用していただくPCの動作環境として以下を推奨しております。
 - OS: Ubuntu 20.04
