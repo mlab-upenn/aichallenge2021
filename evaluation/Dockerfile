@@ -18,7 +18,7 @@ WORKDIR /
 RUN git clone https://github.com/lgsvl/PythonAPI \
  && cd PythonAPI \
  && git checkout 2021.2 \
- && pip3 install -e .
+ && pip3 install .
 
 # copy bringup files
 COPY bringup/autoware/adehome/aichallenge_ws/src /opt/aichallenge_ws/src
