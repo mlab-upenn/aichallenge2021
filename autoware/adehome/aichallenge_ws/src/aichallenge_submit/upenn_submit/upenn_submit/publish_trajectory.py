@@ -32,7 +32,7 @@ class MinimalPublisher(Node):
         self.current_gear = 2
 
 
-        self.subscription2 = self.create_subscription(
+        self.lane_occupied_sub = self.create_subscription(
             String,
             '/planning/lane_occupied',
             self.lane_occupied_callback,
@@ -56,7 +56,7 @@ class MinimalPublisher(Node):
         #     self.listener_callback,
         #     1)
         self.subscription  # prevent unused variable warning
-        self.subscription2
+        self.lane_occupied_sub
         self.vehicle_state_sub
         print("Trajectory Publisher Initialized")
 
