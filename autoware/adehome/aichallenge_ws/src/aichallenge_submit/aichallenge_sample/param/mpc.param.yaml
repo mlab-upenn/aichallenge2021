@@ -2,7 +2,7 @@
   ros__parameters:
     command_topic: "/vehicle/vehicle_command"
     state_topic: "/vehicle/vehicle_kinematic_state"
-    trajectory_topic: "/planning/trajectory"
+    trajectory_topic: "/planning/trajectory2"
     tf_topic: "/tf"
     static_tf_topic: "/tf_static"
     diagnostic_topic: "control_diagnostic"
@@ -13,7 +13,7 @@
       control_lookahead_ms: 100
       limits:
         min_longitudinal_velocity_mps: -5.00
-        max_longitudinal_velocity_mps: 35.0
+        max_longitudinal_velocity_mps: 55.0
         min_lateral_velocity_mps: -3.0
         max_lateral_velocity_mps: 3.0
         min_acceleration_mps2: -3.0

@@ -7,3 +7,5 @@
 /evaluation/aichallenge_submit.tar.gz
 /evaluation/bringup
 /evaluation/output
+
+*.pcd

@@ -17,6 +17,12 @@ def generate_launch_description():
         launch_arguments={}.items()
     )
 
+    upenn_submit = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([get_package_share_directory('upenn_submit'), '/upenn_submit.launch.py']),
+        launch_arguments={}.items()
+    )
+
     return LaunchDescription([
         aichallenge_sample_launch,
+        upenn_submit
     ])
