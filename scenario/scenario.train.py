@@ -88,7 +88,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--host',help='simulator execute pc\'s ip address / --host 192.168.0.1',default='127.0.0.1')
     parser.add_argument('--bridge',help='bridge execute pc\'s ip address / --bridge 192.168.0.1',default='127.0.0.1')
-    parser.add_argument('--vehicle_id',help='vehicle id\'s ip address / --bridge 192.168.0.1',default='5ee169fd-5067-4e67-9a34-6886c6b06ed3')
+    parser.add_argument('--vehicle_id',help='vehicle id\'s ip address / --bridge 192.168.0.1',default='35a48eff-4a4c-46f3-9742-f79b5c8f848f')
     args = parser.parse_args()
 
     sim = lgsvl.Simulator(args.host, 8181)
