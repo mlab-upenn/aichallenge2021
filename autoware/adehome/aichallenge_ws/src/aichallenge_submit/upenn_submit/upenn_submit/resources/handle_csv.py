@@ -26,7 +26,7 @@ def generate_csv():
 
 def read_csv():
     lane = []
-    filename = 'traj_race_cl_4_8'
+    filename = 'clean_-5'
     with open(filename + '.csv', 'r', newline='\n') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
         pass_line = 3

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 # bound_c_ori = np.load('center_lane_bound_ori.npy')
 bound_l = np.load('left_lane_bound_dense.npy')
 bound_r = np.load('right_lane_bound_dense.npy')
-lane_c = np.load('clean_center_dense.npy')
+lane_c = np.load('traj_race_cl_4_8_mincur_dense.npy')
 bound_c = np.load('center_lane.npy')
 
 # def adjust_l():
@@ -127,15 +127,17 @@ def clean_center_lane(bound_c):
     return new_lane
 
 
-# shift = -6.8
+shift = 3.2
 # new_lane = clean_center_lane(bound_c.copy())
 # print(new_lane.shape)
-# new_lane = find_side_lane(new_lane, np.abs(shift), np.sign(shift) * 90)
-new_lane = np.load('traj_race_cl_4_8.npy')
-new_lane = densify_line(new_lane, 0.7)
+# 
+new_lane = np.load('clean_lane_0_sparse.npy')
+new_lane = find_side_lane(new_lane, np.abs(shift), np.sign(shift) * 90)
+new_lane = densify_line(new_lane, 0.5)
 # new_lane = sparsify_line(new_lane, 4.0)
 # np.save('clean_lane_' + str(shift) + '_dense.npy', new_lane)
-np.save('traj_race_cl_4_8_dense.npy', new_lane)
+# new_lane = np.append(new_lane, new_lane[0:])
+np.save('clean_lane_3.2_dense.npy', new_lane)
 
 
 
