@@ -13,13 +13,13 @@
       control_lookahead_ms: 100
       limits:
         min_longitudinal_velocity_mps: -5.00
-        max_longitudinal_velocity_mps: 55.0
+        max_longitudinal_velocity_mps: 65.0
         min_lateral_velocity_mps: -3.0
         max_lateral_velocity_mps: 3.0
-        min_acceleration_mps2: -3.0
-        max_acceleration_mps2: 3.0
-        min_yaw_rate_rps: -3.0
-        max_yaw_rate_rps: 3.0
+        min_acceleration_mps2: -6.0
+        max_acceleration_mps2: 6.0
+        min_yaw_rate_rps: -2.0
+        max_yaw_rate_rps: 2.0
         min_jerk_mps3: -10.0
         max_jerk_mps3: 10.0
         min_steer_angle_rad: -0.67
@@ -42,11 +42,11 @@
         is_temporal_reference: true
       weights:
         nominal:
-          pose: 1000.0
-          heading: 1000.0
-          longitudinal_velocity: 10.0
-          lateral_velocity: 10.0
-          yaw_rate: 10.0
+          pose: 500.0
+          heading: 500.0
+          longitudinal_velocity: 30.0
+          lateral_velocity: 50.0
+          yaw_rate: 70.0
           acceleration: 10.0
           jerk: 10.0
           steer_angle: 10000000.0
@@ -54,8 +54,8 @@
         terminal:
           pose: 10000.0
           heading: 10000.0
-          longitudinal_velocity: 100.0
-          lateral_velocity: 10.0
+          longitudinal_velocity: 10.0
+          lateral_velocity: 100.0
           yaw_rate: 10.0
           acceleration: 0.0
           jerk: 0.0

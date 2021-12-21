@@ -6,7 +6,7 @@ import time
 from geometry_msgs.msg import Pose, PoseStamped
 from std_msgs.msg import String
 
-from autoware_auto_msgs.msg import Trajectory, TrajectoryPoint, VehicleKinematicState, VehicleStateCommand, VehicleStateReport
+from autoware_auto_msgs.msg import Trajectory, TrajectoryPoint, VehicleKinematicState, VehicleStateCommand, VehicleStateReport, VehicleOdometry
 from aichallenge_msgs.msg import TimeData
 from std_msgs.msg import String
 import numpy as np
@@ -27,6 +27,7 @@ class MinimalPublisher(Node):
         self.time_delta = time.time_ns()
         self.time_from_start = 0
         self.current_gear = 2
+        self.current_speed = 0.0
         self.race_finish = 0
         self.slow = 0
 
@@ -54,6 +55,13 @@ class MinimalPublisher(Node):
             '/vehicle/state_report',
             self.vehicle_state_callback,
             1)
+        
+        self.vehicle_speed_sub = self.create_subscription(
+            VehicleOdometry,
+            '/vehicle/odometry',
+            self.vehicle_speed_callback,
+            1
+        )
 
         self.finish_sub = self.create_subscription(
             TimeData,
@@ -66,9 +74,14 @@ class MinimalPublisher(Node):
         self.vehicle_state_sub
         self.finish_sub
         print("Trajectory Publisher Initialized")
+    
+    def vehicle_speed_callback(self, msg):
+        self.current_speed = msg.velocity_mps
 
     def vehicle_state_callback(self, msg):
         self.current_gear = msg.gear
+        #self.current_rpm = msg.engine_rpm
+        #self.current_speed = msg.speed_mps
 
     def finish_callback(self, msg):
         self.race_finish = msg.hasFinished
@@ -116,12 +129,25 @@ class MinimalPublisher(Node):
         if (self.current_gear != 1):
             vehicle_state_msg = VehicleStateCommand()
             vehicle_state_msg.gear = 1
-            vehicle_state_msg.mode = 0
+            vehicle_state_msg.mode = 1
             # vehicle_state_msg.blinker = 1
             vehicle_state_msg.stamp = msg.header.stamp
             self.vehicle_state_pub.publish(vehicle_state_msg)
         else:
-
+            if self.current_gear == 1 and self.current_speed>35:
+                vehicle_state_msg = VehicleStateCommand()
+                vehicle_state_msg.gear = 2
+                vehicle_state_msg.mode = 1
+                # vehicle_state_msg.blinker = 1
+                vehicle_state_msg.stamp = msg.header.stamp
+                self.vehicle_state_pub.publish(vehicle_state_msg)
+            elif self.current_gear == 2 and self.current_speed<30:
+                vehicle_state_msg = VehicleStateCommand()
+                vehicle_state_msg.gear = 1
+                vehicle_state_msg.mode = 1
+                # vehicle_state_msg.blinker = 1
+                vehicle_state_msg.stamp = msg.header.stamp
+                self.vehicle_state_pub.publish(vehicle_state_msg)
             new_msg = Trajectory()
             new_msg.header.stamp.sec = msg.header.stamp.sec
             new_msg.header.stamp.nanosec = msg.header.stamp.nanosec
