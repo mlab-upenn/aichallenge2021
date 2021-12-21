@@ -11,6 +11,7 @@ from scipy.spatial.transform import Rotation
 
 import numpy as np
 import ros2_numpy
+from time import sleep
 import pkg_resources
 
 PACKAGE_NAME='upenn_submit'
@@ -26,6 +27,7 @@ class MinimalSubscriber(Node):
         self.raceline1 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/clean_lane_0_dense.npy'))
         self.raceline2 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/clean_-5_dense.npy'))
         self.raceline3 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/traj_race_cl_4_8_mincur_dense.npy'))
+        self.lane_names = ['right', 'center', 'left', 'race']
         self.pause = 0
         self.raceline_ind = 0
         self.raceline = self.raceline0
@@ -176,7 +178,7 @@ class MinimalSubscriber(Node):
         lane_min_distances.append(distance[min_distance_ind])
         # print(min_distance_ind)
         look_back_num = -10
-        look_ahead_num = 50
+        look_ahead_num = 60
         raceline0_section = append_list(min_distance_ind, self.raceline0, look_back_num, look_ahead_num)
         raceline0_section = self.tranform_map_to_base(raceline0_section)
         
@@ -214,14 +216,13 @@ class MinimalSubscriber(Node):
         pc = pc[np.where( (pc['z'] > self.z_limit[0]) & (pc['z'] < self.z_limit[1]) )]
         pc_arr = ros2_numpy.point_cloud2.get_xyz_points(pc)
         
-        
+        circle_distance = 1.5
         lane_occupancy = np.array([100, 100, 100, 100])
         if raceline0_section is not None:
             lane_occupancy[0] = 0
             point_inds = np.array([])
             for raceline_ind in range(raceline0_section.shape[0]):
                 # print(raceline_section[raceline_ind, :].shape)
-                circle_distance = 1.3
                 point_inds = np.append(point_inds, np.where(np.linalg.norm(pc_arr[:, 0:2] - raceline0_section[raceline_ind, :], axis=1) < circle_distance)[0])
             if point_inds.shape[0] != 0:
                 point_inds = np.unique(point_inds).astype(int)
@@ -233,7 +234,6 @@ class MinimalSubscriber(Node):
             point_inds = np.array([])
             for raceline_ind in range(raceline1_section.shape[0]):
                 # print(raceline_section[raceline_ind, :].shape)
-                circle_distance = 1.3
                 point_inds = np.append(point_inds, np.where(np.linalg.norm(pc_arr[:, 0:2] - raceline1_section[raceline_ind, :], axis=1) < circle_distance)[0])
             if point_inds.shape[0] != 0:
                 point_inds = np.unique(point_inds).astype(int)
@@ -245,7 +245,6 @@ class MinimalSubscriber(Node):
             point_inds = np.array([])
             for raceline_ind in range(raceline2_section.shape[0]):
                 # print(raceline_section[raceline_ind, :].shape)
-                circle_distance = 1.3
                 point_inds = np.append(point_inds, np.where(np.linalg.norm(pc_arr[:, 0:2] - raceline2_section[raceline_ind, :], axis=1) < circle_distance)[0])
             if point_inds.shape[0] != 0:
                 point_inds = np.unique(point_inds).astype(int)
@@ -257,7 +256,6 @@ class MinimalSubscriber(Node):
             point_inds = np.array([])
             for raceline_ind in range(raceline3_section.shape[0]):
                 # print(raceline_section[raceline_ind, :].shape)
-                circle_distance = 1.3
                 point_inds = np.append(point_inds, np.where(np.linalg.norm(pc_arr[:, 0:2] - raceline3_section[raceline_ind, :], axis=1) < circle_distance)[0])
             if point_inds.shape[0] != 0:
                 point_inds = np.unique(point_inds).astype(int)
@@ -266,7 +264,7 @@ class MinimalSubscriber(Node):
 
         
         # print(lane_occupancy, effective_lane)
-        pause_time = 10
+        pause_time = 6
         min_count = 5
         min_switch_count = 3
         if self.pause > 0:
@@ -274,125 +272,37 @@ class MinimalSubscriber(Node):
         else:
             str_msg = String()
             old_raceline_ind = self.raceline_ind
-            if self.raceline_ind == 0 and lane_occupancy[0] > min_count:
-                if lane_occupancy[1] <= min_switch_count and self.pre_lane_occupancy[1] <= min_switch_count:
-                    str_msg.data = "lane1"
+            raceline_occupied = lane_occupancy > min_count
+            print(raceline_occupied)
+            if not np.any(raceline_occupied):
+                # No racelines occupied Choose optimal line
+                str_msg.data = 'lane3'
+                if old_raceline_ind != 3:
                     self.pause = pause_time
-                    self.lane_pub.publish(str_msg)
-                elif lane_occupancy[2] <= min_switch_count and lane_occupancy[1] < min_count:
-                    str_msg.data = "lane2"
+            
+            # Is our current raceline occupied?
+            else:
+                if not raceline_occupied[effective_lane]:
+                    str_msg.data = 'lane{}'.format(effective_lane)
+                elif not raceline_occupied[3]:
+                    str_msg.data = 'lane3'
                     self.pause = pause_time
-                    self.lane_pub.publish(str_msg)
+                # We search for the closest unoccupied raceline
                 else:
-                    if self.timer > 50:
-                        str_msg.data = "slow"
-                        self.lane_pub.publish(str_msg)
-
-            if self.raceline_ind == 1 and lane_occupancy[1] > min_count:
-                if lane_occupancy[0] <= min_switch_count and self.pre_lane_occupancy[0] <= min_switch_count:
-                    str_msg.data = "lane0"
                     self.pause = pause_time
-                    self.lane_pub.publish(str_msg)
-                if lane_occupancy[2] <= min_switch_count and self.pre_lane_occupancy[2] <= min_switch_count:
-                    str_msg.data = "lane2"
-                    self.pause = pause_time
-                    self.lane_pub.publish(str_msg)
-                else:
-                    if self.timer > 50:
-                        str_msg.data = "slow"
-                        self.lane_pub.publish(str_msg)
-
-            if self.raceline_ind == 2 and lane_occupancy[2] > min_count:
-                if lane_occupancy[1] <= min_switch_count and self.pre_lane_occupancy[1] <= min_switch_count:
-                    str_msg.data = "lane1"
-                    self.pause = pause_time
-                    self.lane_pub.publish(str_msg)
-                elif lane_occupancy[0] <= min_switch_count and lane_occupancy[1] < min_count:
-                    str_msg.data = "lane0"
-                    self.pause = pause_time
-                    self.lane_pub.publish(str_msg)
-                else:
-                    if self.timer > 50:
-                        str_msg.data = "slow"
-                        self.lane_pub.publish(str_msg)
-
-            # if self.raceline_ind != 1 and self.timer > 120 and self.timer < 400:
-            #     if lane_occupancy[1] == 0 and self.pre_lane_occupancy[1] <= min_switch_count:
-            #         if self.timer2 >= 5:
-            #             str_msg.data = "lane1"
-            #             self.pause = pause_time
-            #             self.lane_pub.publish(str_msg)
-            #         else:
-            #             self.timer2 += 1
-            #     else:
-            #         self.timer2 = 0
-
-            if self.raceline_ind != 3 and self.timer > 400:
-                if lane_occupancy[0] <= min_switch_count and lane_occupancy[1] <= min_switch_count and lane_occupancy[2] <= min_switch_count and lane_occupancy[3] <= min_switch_count:
-                    if self.timer2 >= 5:
-                        self.pause = pause_time
-                        str_msg = String()
-                        str_msg.data = "lane3"
-                        self.lane_pub.publish(str_msg)
+                    search_idx = (effective_lane-1)%len(raceline_occupied)
+                    if not raceline_occupied[search_idx]:
+                        str_msg.data = 'lane{}'.format(search_idx)
                     else:
-                        self.timer2 += 1
-                else:
-                    self.timer2 = 0
+                        search_idx = (effective_lane+1)%len(raceline_occupied)
+                        if not raceline_occupied[search_idx]:
+                            str_msg.data = 'lane{}'.format(search_idx)
+                        else:
+                            search_idx = (effective_lane+2)%len(raceline_occupied)
+                            str_msg.data = 'lane{}'.format(search_idx)
+            self.lane_pub.publish(str_msg)
+            print(str_msg.data)
 
-            if self.raceline_ind == 3 and lane_occupancy[3] > min_count:
-                if effective_lane == 0:
-                    if lane_occupancy[0] <= min_switch_count:
-                        str_msg.data = "lane0"
-                        self.pause = pause_time
-                        self.lane_pub.publish(str_msg)
-                    elif lane_occupancy[1] <= min_switch_count and self.pre_lane_occupancy[1] <= min_switch_count:
-                        str_msg.data = "lane1"
-                        self.pause = pause_time
-                        self.lane_pub.publish(str_msg)
-                    elif lane_occupancy[2] <= min_switch_count and lane_occupancy[1] < min_count:
-                        str_msg.data = "lane2"
-                        self.pause = pause_time
-                        self.lane_pub.publish(str_msg)
-                    else:
-                        if self.timer > 50:
-                            str_msg.data = "slow"
-                            self.lane_pub.publish(str_msg)
-                elif effective_lane == 1:
-                    if lane_occupancy[1] <= min_switch_count:
-                        str_msg.data = "lane1"
-                        self.pause = pause_time
-                        self.lane_pub.publish(str_msg)
-                    elif lane_occupancy[0] <= min_switch_count and self.pre_lane_occupancy[0] <= min_switch_count:
-                        str_msg.data = "lane0"
-                        self.pause = pause_time
-                        self.lane_pub.publish(str_msg)
-                    elif lane_occupancy[2] <= min_switch_count and self.pre_lane_occupancy[2] <= min_switch_count:
-                        str_msg.data = "lane2"
-                        self.pause = pause_time
-                        self.lane_pub.publish(str_msg)
-                    else:
-                        if self.timer > 50:
-                            str_msg.data = "slow"
-                            self.lane_pub.publish(str_msg)
-                elif effective_lane == 2:
-                    if lane_occupancy[2] <= min_switch_count:
-                        str_msg.data = "lane2"
-                        self.pause = pause_time
-                        self.lane_pub.publish(str_msg)
-                    elif lane_occupancy[1] <= min_switch_count and self.pre_lane_occupancy[1] <= min_switch_count:
-                        str_msg.data = "lane1"
-                        self.pause = pause_time
-                        self.lane_pub.publish(str_msg)
-                    elif lane_occupancy[0] <= min_switch_count and lane_occupancy[1] < min_count:
-                        str_msg.data = "lane0"
-                        self.pause = pause_time
-                        self.lane_pub.publish(str_msg)
-                    else:
-                        if self.timer > 50:
-                            str_msg.data = "slow"
-                            self.lane_pub.publish(str_msg)
-            if str_msg.data != "":
-                print(old_raceline_ind, str_msg.data)
         self.pre_lane_occupancy = lane_occupancy.copy()
         # print(self.timer)
         # if lane_occupancy[2] == 0 and self.timer > 200 and self.timer < 203:
@@ -405,6 +315,8 @@ class MinimalSubscriber(Node):
         new_msg.header.frame_id = 'base_link'
         self.point_pub.publish(new_msg)
         self.need_transform = True
+        #sleep(self.pause)
+        #self.pause = 0
         # self.point_pub(ros2_numpy.point_cloud2.array_to_pointcloud2(pc, msg.header.stamp, msg.header.frame_id))
         
 

@@ -84,7 +84,8 @@ class MinimalPublisher(Node):
         #self.current_speed = msg.speed_mps
 
     def finish_callback(self, msg):
-        self.race_finish = msg.hasFinished
+        #self.race_finish = msg.hasFinished
+        pass
 
     def lane_occupied_callback(self, msg):
         if msg.data == "lane0":
@@ -134,6 +135,7 @@ class MinimalPublisher(Node):
             vehicle_state_msg.stamp = msg.header.stamp
             self.vehicle_state_pub.publish(vehicle_state_msg)
         else:
+            """
             if self.current_gear == 1 and self.current_speed>35:
                 vehicle_state_msg = VehicleStateCommand()
                 vehicle_state_msg.gear = 2
@@ -148,6 +150,7 @@ class MinimalPublisher(Node):
                 # vehicle_state_msg.blinker = 1
                 vehicle_state_msg.stamp = msg.header.stamp
                 self.vehicle_state_pub.publish(vehicle_state_msg)
+            """
             new_msg = Trajectory()
             new_msg.header.stamp.sec = msg.header.stamp.sec
             new_msg.header.stamp.nanosec = msg.header.stamp.nanosec
@@ -181,7 +184,7 @@ class MinimalPublisher(Node):
                 # print(yaw)
                 # new_point.heading.real = np.cos(yaw / 2)
                 # new_point.heading.imag = np.sin(yaw / 2)
-                desired_speed = 55.0
+                desired_speed = 65.0
                 
                     # desired_speed = 0.0
                 new_point.longitudinal_velocity_mps = desired_speed
