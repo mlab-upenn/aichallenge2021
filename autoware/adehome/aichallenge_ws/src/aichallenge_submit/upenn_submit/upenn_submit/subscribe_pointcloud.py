@@ -264,7 +264,7 @@ class MinimalSubscriber(Node):
 
         
         # print(lane_occupancy, effective_lane)
-        pause_time = 3
+        pause_time = 5
         min_count = 5
         min_switch_count = 3
         if self.pause > 0:
