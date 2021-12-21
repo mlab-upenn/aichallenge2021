@@ -178,7 +178,7 @@ class MinimalSubscriber(Node):
         lane_min_distances.append(distance[min_distance_ind])
         # print(min_distance_ind)
         look_back_num = -10
-        look_ahead_num = 60
+        look_ahead_num = 70
         raceline0_section = append_list(min_distance_ind, self.raceline0, look_back_num, look_ahead_num)
         raceline0_section = self.tranform_map_to_base(raceline0_section)
         
@@ -264,7 +264,7 @@ class MinimalSubscriber(Node):
 
         
         # print(lane_occupancy, effective_lane)
-        pause_time = 6
+        pause_time = 3
         min_count = 5
         min_switch_count = 3
         if self.pause > 0:
@@ -290,16 +290,22 @@ class MinimalSubscriber(Node):
                 # We search for the closest unoccupied raceline
                 else:
                     self.pause = pause_time
-                    search_idx = (effective_lane-1)%len(raceline_occupied)
-                    if not raceline_occupied[search_idx]:
-                        str_msg.data = 'lane{}'.format(search_idx)
-                    else:
-                        search_idx = (effective_lane+1)%len(raceline_occupied)
-                        if not raceline_occupied[search_idx]:
-                            str_msg.data = 'lane{}'.format(search_idx)
-                        else:
-                            search_idx = (effective_lane+2)%len(raceline_occupied)
-                            str_msg.data = 'lane{}'.format(search_idx)
+                    if effective_lane == 0:
+                        if not raceline_occupied[1]:
+                            str_msg.data = 'lane1'
+                        elif not raceline_occupied[2]:
+                            str_msg.data = 'lane2'
+                    if effective_lane == 1:
+                        if not raceline_occupied[2]:
+                            str_msg.data = 'lane2'
+                        elif not raceline_occupied[0]:
+                            str_msg.data = 'lane0'
+                    if effective_lane == 2:
+                        if not raceline_occupied[1]:
+                            str_msg.data = 'lane1'
+                        elif not raceline_occupied[0]:
+                            str_msg.data = 'lane0'
+                    
             self.lane_pub.publish(str_msg)
             print(str_msg.data)
 

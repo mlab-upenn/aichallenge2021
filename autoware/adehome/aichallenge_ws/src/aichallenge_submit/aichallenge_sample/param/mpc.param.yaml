@@ -16,12 +16,12 @@
         max_longitudinal_velocity_mps: 65.0
         min_lateral_velocity_mps: -3.0
         max_lateral_velocity_mps: 3.0
-        min_acceleration_mps2: -6.0
-        max_acceleration_mps2: 6.0
-        min_yaw_rate_rps: -1.0
-        max_yaw_rate_rps: 1.0
-        min_jerk_mps3: -7.0
-        max_jerk_mps3: 7.0
+        min_acceleration_mps2: -3.0
+        max_acceleration_mps2: 3.0
+        min_yaw_rate_rps: -2.0
+        max_yaw_rate_rps: 2.0
+        min_jerk_mps3: -8.0
+        max_jerk_mps3: 8.0
         min_steer_angle_rad: -0.67
         max_steer_angle_rad: 0.67
         min_steer_angle_rate_rps: -0.6
@@ -44,8 +44,8 @@
         nominal:
           pose: 600.0
           heading: 900.0
-          longitudinal_velocity: 40.0
-          lateral_velocity: 30.0
+          longitudinal_velocity: 60.0
+          lateral_velocity: 60.0
           yaw_rate: 100.0
           acceleration: 10.0
           jerk: 40.0
