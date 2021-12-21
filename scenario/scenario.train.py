@@ -103,11 +103,11 @@ if __name__ == '__main__':
     scenario_id = 'train'
 
     add_ego_car(vehicle_id)
-    add_racing_car('data/npc1.csv')
-    add_racing_car('data/npc2.csv')
-    add_racing_car('data/npc3.csv')
-    add_racing_car('data/npc4.csv')
-    add_racing_car('data/npc5.csv')
+    # add_racing_car('data/npc1.csv')
+    # add_racing_car('data/npc2.csv')
+    # add_racing_car('data/npc3.csv')
+    # add_racing_car('data/npc4.csv')
+    # add_racing_car('data/npc5.csv')
 
     sim.run(time_limit = 300.0)
     sim.remote.command('simulator/push_message', {'message': 'publish_timersensor'})

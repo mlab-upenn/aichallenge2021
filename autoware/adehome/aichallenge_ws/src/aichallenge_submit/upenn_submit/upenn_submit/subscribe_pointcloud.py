@@ -64,7 +64,7 @@ class MinimalSubscriber(Node):
 
         count = 0
         y_thresh = 1
-        x_thresh = 10
+        x_thresh = 13
         
         if self.pause > 0:
             self.pause -= 1
