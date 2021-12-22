@@ -33,7 +33,7 @@ class MinimalPublisher(Node):
         self.raceline0 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/clean_lane_3.2_dense.npy'))
         self.raceline1 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/clean_lane_-1.2_dense.npy'))
         self.raceline2 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/clean_lane_-5.15_dense.npy'))
-        self.raceline3 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/traj_race_cl_4_8_mincur_dense.npy'))
+        self.raceline3 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/traj_race_cl_6_8_dense.npy'))
         self.raceline_ind = 0
         self.raceline = self.raceline0
 
@@ -155,7 +155,7 @@ class MinimalPublisher(Node):
                 # print(yaw)
                 # new_point.heading.real = np.cos(yaw / 2)
                 # new_point.heading.imag = np.sin(yaw / 2)
-                desired_speed = 55.0
+                desired_speed = 75.0
                 
                     # desired_speed = 0.0
                 new_point.longitudinal_velocity_mps = desired_speed

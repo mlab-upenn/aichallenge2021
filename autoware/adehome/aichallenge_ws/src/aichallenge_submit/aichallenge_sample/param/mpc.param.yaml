@@ -13,7 +13,7 @@
       control_lookahead_ms: 100
       limits:
         min_longitudinal_velocity_mps: -5.00
-        max_longitudinal_velocity_mps: 55.0
+        max_longitudinal_velocity_mps: 100.0
         min_lateral_velocity_mps: -3.0
         max_lateral_velocity_mps: 3.0
         min_acceleration_mps2: -3.0
@@ -42,9 +42,9 @@
         is_temporal_reference: true
       weights:
         nominal:
-          pose: 1000.0
-          heading: 1000.0
-          longitudinal_velocity: 10.0
+          pose: 800.0
+          heading: 750.0
+          longitudinal_velocity: 200.0
           lateral_velocity: 10.0
           yaw_rate: 10.0
           acceleration: 10.0

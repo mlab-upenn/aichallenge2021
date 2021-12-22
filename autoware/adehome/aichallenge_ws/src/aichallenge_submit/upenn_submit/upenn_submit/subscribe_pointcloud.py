@@ -25,7 +25,7 @@ class MinimalSubscriber(Node):
         self.raceline0 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/clean_lane_3.3_dense.npy'))
         self.raceline1 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/clean_lane_0_dense.npy'))
         self.raceline2 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/clean_-5_dense.npy'))
-        self.raceline3 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/traj_race_cl_4_8_mincur_dense.npy'))
+        self.raceline3 = np.load(pkg_resources.resource_filename(PACKAGE_NAME,'resources/traj_race_cl_6_8_dense.npy'))
         self.pause = 0
         self.raceline_ind = 0
         self.raceline = self.raceline0
@@ -113,6 +113,7 @@ class MinimalSubscriber(Node):
             self.need_transform = False
 
     def tranform_map_to_base(self, arr_in):
+        ## tf2 ros2 is not working.
         # try:
         #     now = rclpy.time.Time()
         #     trans = self.tf_buffer.lookup_transform('base_link', 'map', now, timeout=Duration(seconds=1.0))
@@ -175,8 +176,8 @@ class MinimalSubscriber(Node):
         min_distance_ind = np.argmin(distance)
         lane_min_distances.append(distance[min_distance_ind])
         # print(min_distance_ind)
-        look_back_num = -10
-        look_ahead_num = 50
+        look_back_num = -5
+        look_ahead_num = 60
         raceline0_section = append_list(min_distance_ind, self.raceline0, look_back_num, look_ahead_num)
         raceline0_section = self.tranform_map_to_base(raceline0_section)
         
@@ -221,7 +222,7 @@ class MinimalSubscriber(Node):
             point_inds = np.array([])
             for raceline_ind in range(raceline0_section.shape[0]):
                 # print(raceline_section[raceline_ind, :].shape)
-                circle_distance = 1.3
+                circle_distance = 1.4
                 point_inds = np.append(point_inds, np.where(np.linalg.norm(pc_arr[:, 0:2] - raceline0_section[raceline_ind, :], axis=1) < circle_distance)[0])
             if point_inds.shape[0] != 0:
                 point_inds = np.unique(point_inds).astype(int)
@@ -233,7 +234,7 @@ class MinimalSubscriber(Node):
             point_inds = np.array([])
             for raceline_ind in range(raceline1_section.shape[0]):
                 # print(raceline_section[raceline_ind, :].shape)
-                circle_distance = 1.3
+                circle_distance = 1.4
                 point_inds = np.append(point_inds, np.where(np.linalg.norm(pc_arr[:, 0:2] - raceline1_section[raceline_ind, :], axis=1) < circle_distance)[0])
             if point_inds.shape[0] != 0:
                 point_inds = np.unique(point_inds).astype(int)
@@ -245,7 +246,7 @@ class MinimalSubscriber(Node):
             point_inds = np.array([])
             for raceline_ind in range(raceline2_section.shape[0]):
                 # print(raceline_section[raceline_ind, :].shape)
-                circle_distance = 1.3
+                circle_distance = 1.4
                 point_inds = np.append(point_inds, np.where(np.linalg.norm(pc_arr[:, 0:2] - raceline2_section[raceline_ind, :], axis=1) < circle_distance)[0])
             if point_inds.shape[0] != 0:
                 point_inds = np.unique(point_inds).astype(int)
@@ -257,7 +258,7 @@ class MinimalSubscriber(Node):
             point_inds = np.array([])
             for raceline_ind in range(raceline3_section.shape[0]):
                 # print(raceline_section[raceline_ind, :].shape)
-                circle_distance = 1.3
+                circle_distance = 1.4
                 point_inds = np.append(point_inds, np.where(np.linalg.norm(pc_arr[:, 0:2] - raceline3_section[raceline_ind, :], axis=1) < circle_distance)[0])
             if point_inds.shape[0] != 0:
                 point_inds = np.unique(point_inds).astype(int)
@@ -267,8 +268,8 @@ class MinimalSubscriber(Node):
         
         # print(lane_occupancy, effective_lane)
         pause_time = 10
-        min_count = 5
-        min_switch_count = 3
+        min_count = 6
+        min_switch_count = 2
         if self.pause > 0:
             self.pause -= 1
         else:
@@ -327,7 +328,7 @@ class MinimalSubscriber(Node):
             #     else:
             #         self.timer2 = 0
 
-            if self.raceline_ind != 3 and self.timer > 400:
+            if self.raceline_ind != 3 and self.timer > 250:
                 if lane_occupancy[0] <= min_switch_count and lane_occupancy[1] <= min_switch_count and lane_occupancy[2] <= min_switch_count and lane_occupancy[3] <= min_switch_count:
                     if self.timer2 >= 5:
                         self.pause = pause_time
@@ -394,11 +395,6 @@ class MinimalSubscriber(Node):
             if str_msg.data != "":
                 print(old_raceline_ind, str_msg.data)
         self.pre_lane_occupancy = lane_occupancy.copy()
-        # print(self.timer)
-        # if lane_occupancy[2] == 0 and self.timer > 200 and self.timer < 203:
-        #     str_msg = String()
-        #     str_msg.data = "lane2"
-        #     self.lane_pub.publish(str_msg)
         
 
         new_msg = ros2_numpy.msgify(PointCloud2, pc)

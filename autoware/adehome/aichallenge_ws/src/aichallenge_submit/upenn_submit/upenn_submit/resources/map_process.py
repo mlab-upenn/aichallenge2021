@@ -127,17 +127,17 @@ def clean_center_lane(bound_c):
     return new_lane
 
 
-shift = 3.2
+shift = -5.15
 # new_lane = clean_center_lane(bound_c.copy())
 # print(new_lane.shape)
 # 
 new_lane = np.load('clean_lane_0_sparse.npy')
 new_lane = find_side_lane(new_lane, np.abs(shift), np.sign(shift) * 90)
-new_lane = densify_line(new_lane, 0.5)
+new_lane = densify_line(new_lane, 0.72)
 # new_lane = sparsify_line(new_lane, 4.0)
 # np.save('clean_lane_' + str(shift) + '_dense.npy', new_lane)
 # new_lane = np.append(new_lane, new_lane[0:])
-np.save('clean_lane_3.2_dense.npy', new_lane)
+np.save('clean_lane_-5.15_dense2.npy', new_lane)
 
 
 
